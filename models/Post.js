@@ -7,10 +7,14 @@ const postSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
+    },
+    image: {
+      type: String,
+      // required: true,
     },
     body: {
       type: String,
@@ -64,6 +68,10 @@ const postSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
     comments: [
       {
         message: {

@@ -1,4 +1,4 @@
-const testRouter = require("./test");
+// const testRouter = require("./test");
 const loginRouter = require("./login");
 const PostRouter = require("./post");
 const ProfileRouter = require("./profile");
