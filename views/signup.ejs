@@ -10,43 +10,75 @@
     />
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="path/to/font-awesome/css/font-awesome.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <link
+      href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"
+      rel="stylesheet"
+    /> -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/home.css" />
+    <title>Dashboard</title>
   </head>
   <body>
-    <h1>google sign in</h1>
-    <div
-      id="g_id_onload"
-      data-client_id="969755449368-vj7t9jpdhkgd7kf5ua4p6h7mmod63q1k.apps.googleusercontent.com"
-      data-login_uri="http://localhost:5000/login/auth/google"
-      data-auto_prompt="false"
-    ></div>
-    <div
-      class="g_id_signin"
-      data-type="standard"
-      data-size="large"
-      data-theme="outline"
-      data-text="sign_in_with"
-      data-shape="rectangular"
-      data-logo_alignment="left"
-    ></div>
-    <a href="/register">Register</a>
-    <p class="warning"><%= message %></p>
-    <!-- <script>
-      function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-          console.log("User signed out.");
-        });
-      }
-    </script>
-    <script>
-      function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        console.log("ID: " + profile.getId());
-        console.log("Name: " + profile.getName());
-        console.log("Image URL: " + profile.getImageUrl());
-        console.log("Email: " + profile.getEmail());
-      }
-    </script> -->
+    <% console.log(secret) %>
+    <div class="hero-section">
+      <header class="container">
+        <nav>
+          <img src="./images/TravelGasm Vertical.png" class="logo" />
+          <ul class="nav-list">
+            <li>HOME</li>
+            <li>ABOUT</li>
+            <li>BLOG</li>
+            <li>GALLERY</li>
+            <li><a href="/register" class="btn">REGISTER</a></li>
+          </ul>
+          <ul class="mob-nav-list">
+            <li>ABOUT</li>
+            <li>GALLERY</li>
+            <li><a href="#">REGISTER</a></li>
+            <li class="close-icon">X</li>
+          </ul>
+          <span><i class="bx bx-menu btn-open"></i></span>
+        </nav>
+
+        <div class="hero-content">
+          <h1 class="header-title">
+            DIVE INTO WORLD TO TRAVELGASM
+          </h1>
+          <br />
+          <div class="google-btn">
+            <div
+              id="g_id_onload"
+              data-client_id="969755449368-vj7t9jpdhkgd7kf5ua4p6h7mmod63q1k.apps.googleusercontent.com"
+              data-login_uri="http://localhost:5000/login/auth/google"
+              data-auto_prompt="false"
+            ></div>
+            <div
+              class="g_id_signin"
+              data-type="standard"
+              data-size="large"
+              data-theme="outline"
+              data-text="sign_in_with"
+              data-shape="rectangular"
+              data-logo_alignment="left"
+            ></div>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <script src="/js/nav.js"></script>
   </body>
 </html>

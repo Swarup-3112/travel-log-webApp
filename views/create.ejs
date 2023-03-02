@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>create post</h1>
+    <form action="/post" method="POST" enctype='multipart/form-data'>
+        <div class="two">
+            <label>Name</label>
+            <input type="text" name="name" id="name" required class=""  placeholder="Eg: Winner of kabaddi '22">
+        </div>
+        <div class="two">
+            <label>body:</label>
+            <input type="text-area" name="body" id="name" required class=""  placeholder="Eg: Mumbai University">
+        </div>
+        <div class="two">
+            <label>Country:</label>
+            <input type="text" name="country" id="name" required class=""  placeholder="Eg: Mumbai University">
+        </div>
+        <div class="two">
+            <label>State</label>
+            <input type="text" name="state" id="date" required class="" placeholder="select">
+        </div>
+        <div class="two">
+            <label>City</label>
+            <input type="text" name="city" id="date"  class="" placeholder="select">
+        </div>
+        <div class="two">
+            <label>start date</label>
+            <input type="date" name="startDate" id="desc" required class="" placeholder="Eg: Competition level/Outcomes/grade/stipend">
+        </div>
+        <div class="two">
+            <label>end date</label>
+            <input type="date" name="endDate" id="name" class=""  placeholder="Eg: https://drive.google.com/text.pdf" >
+        </div>
+        <input type="file" name="image">
+        <div class="flex">
+            <button type="submit" class="button">Submit</button>
+            <a href="/dashboard" class="button">Back</a>
+        </div>
+    </form>
+</body>
+</html>

@@ -4,6 +4,7 @@ const Controller = require("../controller/post");
 const { upload, setDestination } = require("../middleware/image");
 const validate = require("../middleware/validation");
 
+router.get("/create" , Controller.getCreatePost)
 router.get(
   "/",
   Controller.getAllPost

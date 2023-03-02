@@ -5,9 +5,14 @@ const slugify = require("slugify");
 const fs = require("fs");
 const path = require("path");
 
+module.exports.getCreatePost = (req, res) => {
+  res.render("create.ejs");
+};
+
 module.exports.createPost = async (req, res) => {
   //* destructuring
   const { name, body, startDate, endDate, country, state, city } = req.body;
+  console.log(req.file , "image")
   let _id = mongoose.Types.ObjectId(); //Todo: req user
   let randomString = nanoid(5);
   let response = { success: false, message: "" };
@@ -52,11 +57,11 @@ module.exports.createPost = async (req, res) => {
   let image;
   if (req.file.originalname != "") {
     if (process.env.NODE_ENV == "prod")
-      image = process.env.APP_URL + "/images/events/" + req.file.filename;
+      image = process.env.APP_URL + "/images/posts/" + req.file.filename;
     if (process.env.NODE_ENV == "test")
-      image = process.env.APP_TEST_URL + "/images/events/" + req.file.filename;
+      image = process.env.APP_TEST_URL + "/images/posts/" + req.file.filename;
     if (process.env.NODE_ENV == "dev")
-      image = process.env.APP_DEV_URL + "/images/events/" + req.file.filename;
+      image = process.env.APP_DEV_URL + "/images/posts/" + req.file.filename;
   }
 
   //* create post
@@ -80,7 +85,8 @@ module.exports.createPost = async (req, res) => {
         response.success = true;
         response.message = "Post Created Successful";
         // Todo: Render screen
-        return res.status(201).json(response);
+        // return res.status(201).json(response);
+        return res.redirect("/dashboard")
       }
     })
     .catch((err) => {
@@ -201,52 +207,47 @@ module.exports.updatePost = async (req, res) => {
     });
 };
 
-module.exports.getAllPost = (req, res) => {
+module.exports.getAllPost = async (req, res) => {
   let response = {
     success: false,
     data: { recent: "", totalPage: "" },
   };
-  const today = new Date();
-  const page = 1;
-  const limit = 12;
-  const startIndex = (page - 1) * limit;
+  // const today = new Date();
+  // const page = 1;
+  // const limit = 12;
+  // const startIndex = (page - 1) * limit;
 
-  let promises = [];
+  // let promises = [];
 
   //recent event
-  promises.push(
-    Post.find({
-      "Dates.startDate": { $lt: today.toDateString() },
-    })
+  // promises.push(
+    let data = await Post.find()
       .sort({ "Dates.startDate": -1 })
-      .limit(limit)
-      .skip(startIndex)
-  );
+      .limit(6)
+  // );
 
   //total page
-  promises.push(
-    Post.countDocuments({
-      "Dates.startDate": { $lt: today.toDateString() },
-    })
-  );
+  // promises.push(
+  //   Post.countDocuments({
+  //     "Dates.startDate": { $lt: today.toDateString() },
+  //   })
+  // );
 
-  Promise.all(promises)
-    .then(([recent, totalPage]) => {
-      if (recent && totalPage) {
+    try{
+      if (data) {
         response.success = true;
-        response.data.recent = recent;
-        response.data.totalPage = Math.ceil(totalPage / limit);
         //Todo: render
-        return res.status(200).json(response);
+        return res.render("explore" ,  {post: data })
+        // return res.status(200).json(response);
       } else {
         response.Message = "Could get the Post for you , please try again";
         return res.status(400).json(response);
       }
-    })
-    .catch((err) => {
+    } catch (err) {
+      console.log(err)
       response.errMessage = err.message;
       return res.status(400).json(response);
-    });
+    }
 };
 
 module.exports.deletePost = async (req, res) => {
@@ -272,17 +273,19 @@ module.exports.deletePost = async (req, res) => {
 
 module.exports.singlePost = async (req, res) => {
   let response = { success: false };
+  let blog;
   try {
     const { slug } = req.params;
     let post = await Post.findOne({ slug: slug });
     if (post) {
       response.success = true;
-      response.data = post;
+      blog = post;
       //Todo: render
-      return res.status(200).json(response);
+      // return res.status(200).json(response);
+      return res.render("singleBlog" ,  {post: blog})
     } else {
       response.message = "Could not get the post , please try again";
-      return res.status(400).json(response);
+      res.render("singleBlog" ,  {post: blog})
     }
   } catch (error) {
     // console.log(error, "error");

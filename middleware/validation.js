@@ -17,11 +17,11 @@ module.exports = async (req, res, next) => {
     }
 
     // file max size would be 1mb
-    if (req.file.size > 1024 * 1024) {
-      fs.unlinkSync(req.file.path);
-      response.message = "Please provide image with size less than 1Mb ";
-      return res.status(400).json(response);
-    }
+    // if (req.file.size > 1024 * 1024) {
+    //   fs.unlinkSync(req.file.path);
+    //   response.message = "Please provide image with size less than 1Mb ";
+    //   return res.status(400).json(response);
+    // }
   }
 
   const validate = (file, name) => {

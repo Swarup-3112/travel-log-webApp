@@ -2,12 +2,16 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client();
 const nanoid = require("nanoid");
 const slugify = require("slugify");
+const { createAccessToken , createRefreshToken} = require("../middleware/jwt")
 
 const User = require("../models/User");
+const Post = require("../models/Post")
 
 module.exports.signIn = (req, res) => {
-  console.log("hello");
-  res.render("signup.ejs" , {message: null });
+  console.log("hello yash");
+  const secret = req.user
+  console.log(secret , "user")
+  res.render("signup.ejs" , {message: null  , secret: secret});
 };
 
 module.exports.register = (req, res) => {
@@ -44,7 +48,7 @@ module.exports.registration = async (req, res) => {
     const checkUser = await User.findOne({ email });
     if (checkUser) {
       response.message = "Email has already been registered";
-      res.render("register.ejs", { message: message });
+      return res.render("register.ejs", { message: message });
     }
     let user = new User({
       name,
@@ -66,11 +70,13 @@ module.exports.registration = async (req, res) => {
     response.message = "Registration failed, please try again";
     res.status(400).json(response);
   }
-  res.redirect("/");
 };
 
-module.exports.home = (req, res) => {
-  res.render("home.ejs");
+module.exports.home = async (req, res) => {
+  let post = await Post.find().limit(6).sort({createdAt: 1}).select("name image Dates slug")
+  let user = await User.findOne({id: req.user.userId})
+  console.log(user , "post")
+  res.render("home.ejs" , {post: post , user: user.slug});
 };
 
 module.exports.authGoogle = async (req, res) => {
@@ -96,14 +102,22 @@ module.exports.authGoogle = async (req, res) => {
       { new: true }
     );
     if (user) {
-      res.redirect("/dashboard");
+      let accessToken = createAccessToken(user)
+      let refreshToken = createRefreshToken(user)
+      res.cookie("jwt", refreshToken, {
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        httpOnly: true,
+        // signed: true,
+        secure: process.env.NODE_ENV === "prod" ? true : false,
+      });
+      return res.redirect("/dashboard");
     } else {
       message = "please register to sign in";
-      res.render("signup.ejs", { message: message });
+      return res.redirect("/", { message: message });
     }
   } catch (err) {
-    response.errMessage = error.message;
-    console.log(error.errMessage, "error");
+    response.errMessage = err.errMessage;
+    console.log(err, "error");
     response.message = "Google sign in failed, please try again";
     res.status(400).json(response);
   }
