@@ -1,13 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="css/singleBlog.css" />
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
 </head>
+
 <body>
-    <h1>single blog</h1>
-    <p><%= post.name %></p>
+    <section class="hero-section">
+        <header class="container">
+            <!-- <nav class="nav">
+                <img src="./images/TravelGasm Vertical.png" class="logo" />
+                <ul class="nav-list">
+                  <li><a href="#about">ABOUT</a></li>
+                  <li><a href="/post/">EXPLORE</a></li>
+                  <li><a href="/post/create">POST</a></li>
+                  <li><a href="/profile/<%= user %>">PROFILE</a></li>
+                </ul>
+                <span><i class="bx bx-menu btn-open"></i></span>
+            </nav> -->
+        </header>
+
+        <div class="hero-content">
+            <h1>Wanderers</h1>
+            <p class="hero-description">
+                Treat yourself with a journey to your inner self. Visit a mystique
+                Tibet and start spiritual adventure. We promise, you’ll enjoy every
+                step you make.
+            </p>
+        </div>
+    </section>
+    <section class="main-section">
+        <div>
+            <img src="../public/images/Rectangle35.png">
+        </div>
+        <div>
+            <h1 class="heading">Wanderers of life</h1>
+            <p class="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu nisi sit amet dui
+                pharetra aliquam. Nunc mattis orci atlor em aliquet, ut lacinia risus maximus. Aliquam elit tellus,
+                scelerisque eget tellus at, convallis condimentum lectus iumusu. Aliquam suscipit ante a est dignissim
+                tempor. Curabitur cursus auctor urna vitae pellentesque. Nunc ut mattis metus. Sed in tortor mauris.
+                Nunc cursus metus sit amet urna consectetur, vitae imperdiet dolor elementum. Interdum et malesuada
+                fames ac ante ipsum primis in faucibus. Sed sed lorem nec felis ultrices scelerisque sit ametus
+                ullamcorper dolor.<br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu nisi sit amet
+                dui pharetra aliquam. Nunc mattis orci atlor em aliquet, ut lacinia risus maximus. Aliquam elit tellus,
+                scelerisque eget tellus at, convallis condimentum lectus iumusu. Aliquam suscipit ante a est dignissim
+                tempor. Curabitur cursus auctor urna vitae pellentesque. Nunc ut mattis metus. Sed in tortor mauris.
+                Nunc cursus metus sit amet urna consectetur, vitae imperdiet dolor elementum. Interdum et malesuada
+                fames ac ante ipsum primis in faucibus. Sed sed lorem nec felis ultrices scelerisque sit ametus
+                ullamcorper dolor.</p>
+        </div>
+        <div class="flex">
+            <div class> <input type="text" placeholder="What are your thoughts about this post ?"></div>
+            <div><button>Comment</button></div>
+        </div>
+        <div class="flex">
+            <div><i class='bx bx-calendar-alt bx-calendar'></i></div>
+            <div class="text">February 21, 2020</div>
+            <div><i class='bx bx-message-rounded'></i></div>
+            <div class="text">3</div>
+            <div><i class='bx bx-heart'></i></div>
+            <div class="text">10</div>
+        </div>
+    </section>
+
 </body>
+
 </html>
