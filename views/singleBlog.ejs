@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <script type="text/javascript" src="dist/purify.min.js"></script> -->
     <title>Document</title>
 </head>
+
 <body>
-    <h1>single blog</h1>
-    <p><%= post.name %></p>
+        <h1>single blog</h1>
+        <p id="data"></p>
+        <p id="blog"><%= post.body %></p>
+        <script>
+            let text = document.getElementById("blog").innerText;
+            console.log(text , "post")
+            const unsanitized_string = text; 
+            const sanitizer = new Sanitizer(); 
+            const target = document.getElementById("data");
+            target.setHTML(unsanitized_string, { sanitizer });
+        </script>
 </body>
+
 </html>

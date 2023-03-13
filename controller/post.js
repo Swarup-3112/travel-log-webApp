@@ -12,6 +12,7 @@ module.exports.getCreatePost = (req, res) => {
 module.exports.createPost = async (req, res) => {
   //* destructuring
   const { name, body, startDate, endDate, country, state, city } = req.body;
+  console.log(req.body)
   console.log(req.file , "image")
   let _id = mongoose.Types.ObjectId(); //Todo: req user
   let randomString = nanoid(5);
