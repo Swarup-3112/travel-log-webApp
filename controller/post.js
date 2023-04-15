@@ -4,16 +4,17 @@ const nanoid = require("nanoid");
 const slugify = require("slugify");
 const fs = require("fs");
 const path = require("path");
+const constant = require("../constant");
 
 module.exports.getCreatePost = (req, res) => {
-  res.render("create.ejs");
+  return res.render("create.ejs");
 };
 
 module.exports.createPost = async (req, res) => {
   //* destructuring
-  const { name, body, startDate, endDate, country, state, city } = req.body;
-  console.log(req.body)
-  console.log(req.file , "image")
+  const { name, body, startDate, endDate, country, state, city, ar } = req.body;
+  console.log(req.body);
+  console.log(req.file, "image");
   let _id = mongoose.Types.ObjectId(); //Todo: req user
   let randomString = nanoid(5);
   let response = { success: false, message: "" };
@@ -54,6 +55,19 @@ module.exports.createPost = async (req, res) => {
     return res.status(400).json(response);
   }
 
+  console.log(ar , "ar")
+  let entries = Object.entries(constant.Qr);
+  let scanme;
+  let data = entries.map(([key, val] = entry) => {
+    if (key == ar) {
+      scanme = val;
+    }
+    return scanme;
+  });
+
+  console.log(data , "data")
+  console.log(scanme , "scanme")
+
   //* image path
   let image;
   if (req.file.originalname != "") {
@@ -70,12 +84,14 @@ module.exports.createPost = async (req, res) => {
     name,
     body,
     image,
+    ar: scanme,
     Dates: { startDate: startDate, endDate: endDate },
     createdBy: _id,
     coverImage: image,
     Location: { country: country, state: state, city: city },
     slug: randomString + "-" + slugify(name, { lower: true }),
   });
+
 
   //* Saving Post
   await post
@@ -87,7 +103,7 @@ module.exports.createPost = async (req, res) => {
         response.message = "Post Created Successful";
         // Todo: Render screen
         // return res.status(201).json(response);
-        return res.redirect("/dashboard")
+        return res.redirect("/dashboard");
       }
     })
     .catch((err) => {
@@ -222,9 +238,7 @@ module.exports.getAllPost = async (req, res) => {
 
   //recent event
   // promises.push(
-    let data = await Post.find()
-      .sort({ "Dates.startDate": -1 })
-      .limit(6)
+  let data = await Post.find().sort({ "Dates.startDate": -1 }).limit(6);
   // );
 
   //total page
@@ -234,21 +248,21 @@ module.exports.getAllPost = async (req, res) => {
   //   })
   // );
 
-    try{
-      if (data) {
-        response.success = true;
-        //Todo: render
-        return res.render("explore" ,  {post: data })
-        // return res.status(200).json(response);
-      } else {
-        response.Message = "Could get the Post for you , please try again";
-        return res.status(400).json(response);
-      }
-    } catch (err) {
-      console.log(err)
-      response.errMessage = err.message;
+  try {
+    if (data) {
+      response.success = true;
+      //Todo: render
+      return res.render("explore", { post: data });
+      // return res.status(200).json(response);
+    } else {
+      response.Message = "Could get the Post for you , please try again";
       return res.status(400).json(response);
     }
+  } catch (err) {
+    console.log(err);
+    response.errMessage = err.message;
+    return res.status(400).json(response);
+  }
 };
 
 module.exports.deletePost = async (req, res) => {
@@ -275,18 +289,25 @@ module.exports.deletePost = async (req, res) => {
 module.exports.singlePost = async (req, res) => {
   let response = { success: false };
   let blog;
+  let like = "false";
   try {
     const { slug } = req.params;
-    let post = await Post.findOne({ slug: slug });
+    let post = await Post.findOne({ slug: slug }).populate({
+      path: "comments.author",
+      select: "profile name",
+    });
     if (post) {
+      console.log(post, "post");
       response.success = true;
       blog = post;
+      if (post.likes.includes(req.user.userId)) like = "true";
+      console.log(blog.like, "hello");
       //Todo: render
       // return res.status(200).json(response);
-      return res.render("singleBlog" ,  {post: blog})
+      return res.render("singleBlog", { post: blog, like: like });
     } else {
       response.message = "Could not get the post , please try again";
-      res.render("singleBlog" ,  {post: blog})
+      res.render("singleBlog", { post: blog, like: like });
     }
   } catch (error) {
     // console.log(error, "error");
@@ -296,7 +317,7 @@ module.exports.singlePost = async (req, res) => {
 };
 
 module.exports.comment = async (req, res) => {
-  const userId = mongoose.Types.ObjectId(); //Todo: req user
+  const userId = req.user.userId; //Todo: req user
   const { slug } = req.params;
   let response = { success: false, message: "", errMessage: "" };
 
@@ -314,13 +335,14 @@ module.exports.comment = async (req, res) => {
         response.success = true;
         response.message = "Commented successfully";
         //Todo: render page or return
-        res.status(200).json(response);
+        return res.redirect(`/post/${slug}`);
       }
     })
     .catch((err) => {
       response.message = "comment could not get posted , please try again";
       response.errMessage = err.message;
-      res.status(400).json(response);
+      console.log(err.message, "error");
+      return res.status(400).json(response);
     });
 };
 
@@ -351,42 +373,51 @@ module.exports.deleteComment = async (req, res) => {
 };
 
 module.exports.likePost = async (req, res) => {
-  let { slug } = req.params;
+  let slug = req.body.slug;
   const userId = "63297106e19a113edaa6bf7a";
   const isLike = req.body.isLike;
-  let response = { success: false, message: ""};
-
+  let response = { success: false, message: "" };
+  console.log(isLike, "yoo");
   if (!isLike) {
-    Post.findOneAndUpdate({ slug: slug }, { $addToSet: { likes: userId } })
-      .then( async (result) => {
+    console.log(slug, userId, "andar aya");
+    await Post.findOneAndUpdate(
+      { slug: slug },
+      { $addToSet: { likes: userId } }
+    )
+      .then(async (result) => {
         if (result) {
-          result.likesCount++; 
+          result.likesCount++;
           await result.save();
           response.success = true;
           response.message = "Post liked";
-          res.status(200).json(response);
+          console.log(result);
+          return res.status(200).json(response);
         }
       })
       .catch((err) => {
         response.message = "please try again";
         response.errMessage = err.message;
-        res.status(400).json(response);
+        console.log(err.message);
+        return res.status(400).json(response);
       });
   } else {
-    Post.findOneAndUpdate({ slug: slug }, { $pull: { likes: userId } })
+    await Post.findOneAndUpdate({ slug: slug }, { $pull: { likes: userId } })
       .then(async (result) => {
         if (result) {
-          result.likesCount--; 
+          result.likesCount--;
           await result.save();
           response.success = true;
           response.message = "Blog unliked";
-          res.status(200).json(response);
+          console.log(result);
+          return res.status(200).json(response);
         }
       })
       .catch((err) => {
         response.message = "Personal Error Message";
         response.errMessage = err.message;
-        res.status(400).json(response);
+        console.log(err.message);
+        return res.status(400).json(response);
       });
   }
+  console.log("the end ");
 };
